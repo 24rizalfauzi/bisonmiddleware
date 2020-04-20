@@ -1,5 +1,8 @@
 'use strict';
 
+const https = require('https');
+const fs = require('fs');
+
 global.config = require('./config.js')
 global.service = require('./service/service');
 
