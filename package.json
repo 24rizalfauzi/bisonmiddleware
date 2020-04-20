@@ -1,0 +1,35 @@
+{
+  "name": "bison_middleware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=dev node src/app.js",
+    "testt": "mocha specs --reporter spec",
+    "dev": "set NODE_ENV=dev&&nodemon src/app.js",
+    "test": "set NODE_ENV=test&&nodemon src/app.js",
+    "prod": "set NODE_ENV=prod&&nodemon src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "cryptr": "^6.0.1",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
+    "express-session": "^1.17.0",
+    "helmet": "^3.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.2.1",
+    "multer": "^1.4.2",
+    "mysql": "^2.17.1",
+    "nodemailer": "^6.4.2",
+    "path": "^0.12.7",
+    "query-string": "^6.10.1",
+    "request": "^2.88.0",
+    "serve-index": "^1.9.1",
+    "url": "^0.11.0"
+  }
+}
