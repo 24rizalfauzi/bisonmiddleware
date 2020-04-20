@@ -105,4 +105,12 @@ app.use('/api', api)
 
 //end routing
 
-app.listen(config.portApp)
+if (process.env.NODE_ENV=='dev' || process.env.NODE_ENV=='prod') {
+	const options = {
+	  key: fs.readFileSync(config.sslkey),
+	  cert: fs.readFileSync(config.sslcert)
+	};
+	https.createServer(options, app).listen(config.portApp);
+} else {
+	app.listen(config.portApp)
+}
