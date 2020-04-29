@@ -156,31 +156,46 @@ module.exports = {
             try {
                 (async () => {
                     var isValid = false;
-                    var queryUser = await query(`CALL procGetUserByNip("`+req.nip+`");`);
+                    var queryUser = await query(`SELECT * from tbl_users where tbl_users.nip="${req.nip}" OR tbl_users.email="${req.nip}" OR tbl_users.name="${req.nip}" limit 1;`);
                     if (queryUser=='errdb1'||queryUser=='errdb2') {
                         resolve({
                             responseCode : false,
                             responseMessage : 'Terjadi Kesalahan Sistem. Hubungi Administrator.'
                         });
                     }
-                    var users = queryUser[0];
-                    var user = users[0];
-                    if (users.length==1) {
-                        var md5 = require('md5');
-                        if (user.password==md5(req.password)) {
-                            isValid = true
-                        }
-                    } 
-                    if (isValid) {
-                        resolve({
-                            responseCode : true,
-                            responseMessage : 'Sukses',
-                            user : user
-                        });                        
+                    var user = queryUser[0];
+                    if (queryUser.length==1) {
+                        var email = user.email;
+                        var password = req.password;
+                        const nodemailer = require('nodemailer')
+                        let transporter = nodemailer.createTransport({
+                            host: config.smtpHost,
+                            port: config.smtpPort,
+                            secure: false, // true for 465, false for other ports
+                            auth: {
+                                user: email, // generated ethereal user
+                                pass: password // generated ethereal password
+                            }
+                        })
+                        // verify connection configuration
+                        transporter.verify(function(error, success) {
+                            if (error) {
+                                resolve({
+                                    responseCode : false,
+                                    responseMessage : 'Password salah / Pastikan Anda sudah didaftarkan oleh Admin ke database'
+                                });
+                            } else {
+                                resolve({
+                                    responseCode : true,
+                                    responseMessage : 'Sukses',
+                                    user : user
+                                });  
+                            }
+                        });
                     } else {
                         resolve({
                             responseCode : false,
-                            responseMessage : 'NIp atau password salah'
+                            responseMessage : 'NIP / Nama / Email / Password salah / Pastikan Anda sudah didaftarkan oleh Admin ke database'
                         });
                     }
                 })();   
