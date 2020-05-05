@@ -175,6 +175,9 @@ module.exports = {
                             auth: {
                                 user: email, // generated ethereal user
                                 pass: password // generated ethereal password
+                            },
+                            tls: {
+                                rejectUnauthorized: false
                             }
                         })
                         // verify connection configuration
