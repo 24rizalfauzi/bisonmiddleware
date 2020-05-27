@@ -156,6 +156,48 @@ module.exports = {
             try {
                 (async () => {
                     var isValid = false;
+                    var queryUser = await query(`CALL procGetUserByNip("`+req.nip+`");`);
+                    if (queryUser=='errdb1'||queryUser=='errdb2') {
+                        resolve({
+                            responseCode : false,
+                            responseMessage : 'Terjadi Kesalahan Sistem. Hubungi Administrator.'
+                        });
+                    }
+                    var users = queryUser[0];
+                    var user = users[0];
+                    if (users.length==1) {
+                        var md5 = require('md5');
+                        if (user.password==md5(req.password)) {
+                            isValid = true
+                        }
+                    } 
+                    if (isValid) {
+                        resolve({
+                            responseCode : true,
+                            responseMessage : 'Sukses',
+                            user : user
+                        });                        
+                    } else {
+                        resolve({
+                            responseCode : false,
+                            responseMessage : 'NIp atau password salah'
+                        });
+                    }
+                })();   
+            } catch (error) {
+                console.log('error' + error)
+                resolve({
+                    responseCode : false,
+                    responseMessage : 'Terjadi Kesalahan Sistem. Hubungi Administrator.'
+                });
+            }
+        })
+    },
+    loginV2: async function (req) {
+        return new Promise(function (resolve, reject) {
+            try {
+                (async () => {
+                    var isValid = false;
                     var queryUser = await query(`SELECT * from tbl_users where tbl_users.nip="${req.nip}" OR tbl_users.email="${req.nip}" OR tbl_users.name="${req.nip}" limit 1;`);
                     if (queryUser=='errdb1'||queryUser=='errdb2') {
                         resolve({
@@ -169,20 +211,18 @@ module.exports = {
                         var password = req.password;
                         const nodemailer = require('nodemailer')
                         let transporter = nodemailer.createTransport({
-                            host: config.smtpHost,
-                            port: config.smtpPort,
+                            host: 'localhost',
+                            port: '25',
                             secure: false, // true for 465, false for other ports
                             auth: {
                                 user: email, // generated ethereal user
                                 pass: password // generated ethereal password
-                            },
-                            tls: {
-                                rejectUnauthorized: false
                             }
                         })
                         // verify connection configuration
                         transporter.verify(function(error, success) {
                             if (error) {
+                                console.log(error)
                                 resolve({
                                     responseCode : false,
                                     responseMessage : 'Password salah / Pastikan Anda sudah didaftarkan oleh Admin ke database'
