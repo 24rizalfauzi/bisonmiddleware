@@ -145,6 +145,13 @@ router.post('/changeProgressIde', async function (req, res, next) {
     res.end();    
 });
 
+router.post('/changeProgressSharing', async function (req, res, next) {
+    await service.validateToken(req.headers.authorization, res)
+    var serviceChangeProgressSharing = await service.changeProgressSharing(req.body,req.files)
+    res.send(serviceChangeProgressSharing);
+    res.end();    
+});
+
 router.post('/updateStatusIde', async function (req, res, next) {
     await service.validateToken(req.headers.authorization, res)
     var updateStatusIde = await service.updateStatusIde(req.body)

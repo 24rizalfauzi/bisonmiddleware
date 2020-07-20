@@ -591,12 +591,12 @@ module.exports = {
             }
         })
     },
-    changeProgressIde: async function (req, files) {
+    changeProgressSharing: async function (req, files) {
         return new Promise(function (resolve, reject) {
             try {
                 (async () => {
                     await query(`CALL procLastActiveUser(`+req.activeUserId+`);`);
-                    var querySubmitKomenIde = await query(`CALL procChangeProgressIde("`+req.ideId+`", "`+req.ideProgress+`");`);
+                    var querySubmitKomenSharing = await query(`CALL procChangeProgressSharing("`+req.sharingId+`", "`+req.sharingProgress+`");`);
                     resolve({
                         responseCode : true,
                         responseMessage : 'Sukses berkomentar'
